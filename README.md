@@ -1,9 +1,20 @@
-> [!WARNING]
-> This project is a work in progress. It is still being built and is not ready for use.
+<div align="center">
+
+<img src="assets/png/tock-icon-256.png" alt="Tock" width="120" height="120">
 
 # Tock
 
+**Your two-factor codes, one click away in the menu bar.**
+
 Tock is a macOS menu bar app that shows your two-factor codes. Click the menu bar icon to see the current code for every service, and click a code to copy it.
+
+</div>
+
+| Menu bar | Editing a service |
+| :---: | :---: |
+| <img src="assets/screenshots/menu-bar.png" alt="Tock's menu bar popover listing six services, each with a code and a countdown ring" width="340"> | <img src="assets/screenshots/editor.png" alt="Tock's service editor with digits, period, and algorithm settings and a live code preview" width="340"> |
+
+The screenshots use made-up services and random secrets.
 
 - Codes follow RFC 6238 (TOTP). Each service can set its digits (6, 7, or 8), period (5 to 300 seconds), and algorithm (SHA-1, SHA-256, or SHA-512). New services start at 6 digits, 30 seconds, SHA-1, which is what almost every site uses.
 - Each service, secret included, is stored as one item in your login keychain. Tock writes nothing else to disk except the list order and two preferences in its app defaults.
