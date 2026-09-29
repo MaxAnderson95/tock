@@ -28,10 +28,12 @@ jobs:
         id: version
         env:
           TAG: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         shell: bash
         run: |
-          git fetch --no-tags origin "+refs/tags/${TAG}:refs/tags/${TAG}"
-          if [[ "$(git cat-file -t "refs/tags/${TAG}")" != tag ]]; then
+          # The checkout does not keep the tag object, so ask GitHub whether the ref points at one.
+          if [[ "$(gh api "repos/${GH_REPO}/git/ref/tags/${TAG}" --jq .object.type)" != tag ]]; then
             echo "::error::Tag is not annotated: $TAG"
             exit 1
           fi
