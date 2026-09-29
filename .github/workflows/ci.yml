@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+    paths:
+      - '.github/workflows/**'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - '!**/*.md'
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'Package.swift'
+      - 'Sources/**'
+      - 'Tests/**'
+      - 'scripts/**'
+      - 'assets/**'
+      - '!**/*.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    name: Swift tests and app bundle
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Check shell syntax
+        run: |
+          for script in scripts/*.sh; do
+            bash -n "$script"
+          done
+
+      - name: Test Swift
+        run: |
+          swift --version
+          bash scripts/test-swift.sh
+
+      - name: Build and verify app bundle
+        run: |
+          bash scripts/build-app.sh
+          codesign --verify --deep --strict build/Tock.app
